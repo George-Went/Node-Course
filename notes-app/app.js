@@ -4,8 +4,6 @@ const notes = require('./notes.js')
 
 yargs.version('1.1.0')
 
-console.log("run")
-
 // Adding a Note
 yargs.command({
     command: 'add',
@@ -47,15 +45,9 @@ yargs.command({
 yargs.command({
     command: 'list',
     describe: 'list all notes',
-    builder: {
-        list: {
-            describe: 'Note title',
-            demandOption: true,
-            type: 'string'
-        }
-    },
+    
     handler: function () {
-        console.log("list all notes")
+        notes.listNotes()
     }
 })
 
@@ -64,17 +56,17 @@ yargs.command({
     command: 'read',
     describe: 'read a single defined note',
     builder: {
-        list: {
+        title: {
             describe: 'Note title',
             demandOption: true,
             type: 'string'
         }
     },
-    handler: function () {
-        console.log("list all notes")
+    handler: function (argv) {
+        notes.readNotes(argv.title)
     }
 })
 
-console.log(yargs.argv) 
-// prints out the yarg argumeng variables 'yarguments?'
-// yargs.argumentVariables (argvs)
+
+// Prints out just the results of arguments (yarguments?)
+yargs.parse()
