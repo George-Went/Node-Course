@@ -133,65 +133,6 @@ We can then run ```npm start``` whcih will run the start script - which itself w
 >**Note:** With certian intergragted terminals (````vs code``` sofar) a snapshot is taken of the PATH when vs code is launched, if you then install node js after launching a vs application, issues can arise from not having the new infomation added to the vs code path 'snapshot', issues that arise from this can generally be fixed by restarting the vs code application.
 
 
-# Course Topics 
-## Notes (Basic Functions)
-
-## Export Modules (require xyz)
-### validation
-
-## Chalk 
-
-## Global packages and nodemon
-
-## Command Line options and yargs
-
-## Accessing file systems 
-
-## Using Yargs
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -4,6 +4,10 @@ const notes = require('./notes.js')
 
 yargs.version('1.1.0')
 
+debugger 
+// To use a debugger, put 'inspect' before the script name 
+// In thsi case it would be 'node inspect app.js --title="" --body=""'
+
 // Adding a Note
 yargs.command({
     command: 'add',
@@ -70,3 +74,4 @@ yargs.command({
 
 // Prints out just the results of arguments (yarguments?)
 yargs.parse()
+
