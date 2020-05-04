@@ -2,7 +2,3 @@
 // interfear with example code 
 
 
-const add = (a, b, (sum) => {
-    sum = a + b
-    console.log(sum)
-})

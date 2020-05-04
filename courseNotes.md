@@ -51,7 +51,7 @@ setTimeout(( ) => {
 
 setTimeout( () => {
     console.log('0 Second timer') 
-    // set time out is a node fucntion provided by C++
+    // set time out is a node function provided by C++
 }, 0)
 
 console.log('Stopping')
@@ -93,6 +93,15 @@ You could daisy chain the operators together so that function 1 calls function 2
 
 
 ## Call Stack 
+In a simple synchronous application, the callstack tracks the execution of a program from its inception at a point like `app.js` to its final endpoint. With engines, when the program finishes it repeats again, with events being triggered if the programed conditions are met. This givecs rise to the name `event loop`.  
+
+You can see what a call stack is when you get an error in languages like node or java - the functions that are called that lead up to the error are printed out in the manner they are called - a call stack. 
+
+>**Note:** historically a stack
+
+
+
+
 
 
 ## HTTP Requests
@@ -170,5 +179,5 @@ request({ url:url, json: true }, (error, response) => {
 ```
 whereby ```response.body``` is telling the program to look in the body of the response (an will usually be checked in a IDE), the ```current.pressure``` is part of the JSON (and will not be picked up by an IDE - something that caught me out a lot in the past)
 
-If a response comes with a array rather than a series of nested JSON's, you can also use ```response.body.current[1]``` to referance the array rather than a JSON(JSON(JSON))   
+If a response comes with a array rather than a series of nested JSON's, you can also use ```response.body.current[1]``` to referance the array rather than a JSON(Object(Object))   
 
