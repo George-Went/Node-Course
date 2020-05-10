@@ -1,40 +1,52 @@
 const path = require('path') 
 const express = require('express')
-
-console.log(__dirname) // absoloute path to the directory the file is in
-console.log(__filename) // absoloute path to the file itself
-console.log(path.join(__dirname, '../public')) // path module alows us to modify the file path
-                                               // it allows us to access files that are not in the same directory
+const hbs = require('hbs')
 
 const app = express() // link app to the express object
-const publicDirectoryPath = path.join(__dirname, '../public')
 
-app.use(express.static(publicDirectoryPath)) // sets up the static file location to server static files
+// Define Path for express configurations (configs)
+const publicDirectoryPath = path.join(__dirname, '../public') // assign the location of the public files to a variable
+const viewsPath = path.join(__dirname, '../templates/views')        // Assign the location of the views file to a custom directory
+const partialsPath = path.join(__dirname, '../templates/partials')
+
+// Set up handlebars  engine and views location 
+app.set('view engine', 'hbs')  //app.set('value', 'module')
+app.set('views', viewsPath)
+hbs.registerPartials(partialsPath)
+
+
+// sets up the static file location to server static files
+app.use(express.static(publicDirectoryPath)) 
 
 
 
 // Root
-app.get('', (req, res) => { // (port, function(request, response))
-    res.send('<h1>Hello express<h1>')
+app.get('', (req, res) => {
+    res.render('index', {
+        title: 'Weather',
+        name: 'George Went'
+    })
 })
 
 
-// // app.com/help
-// // Express automatically creates a json response when provided with json / object data
-// app.get('/help', (req, res) =>{
-//     res.send(
-//         {name: 'george',
-//          age: 24})
-// })
-
-// // /about
-// app.get('/about' ,(req, res) => {
-//     res.send('About')
-// })
+// /about
+app.get('/about' ,(req, res) => {
+    res.render('about', {
+                title: 'About',
+                name: 'George Went'
+    })
+})
 
 
-
-
+// app.com/help
+// Express automatically creates a json response when provided with json / object data
+app.get('/help', (req, res) =>{
+    res.render('help', {
+        title: 'Help',
+        content: 'Some helpful stuff',
+        name: 'George Went'
+    })
+})
 
 
 
@@ -51,6 +63,22 @@ app.get('/weatherData' ,(req, res) => {
             wind_speed: 5,
             cloud_coverage: 'Overcast '
         })
+})
+
+app.get('/help/*', (req, res) => { // '*' is a wildcard url 
+res.render('404', {
+    title: 'help',
+    errorMessage: '404 - Help article not found',
+    name: 'George Went'
+})
+})
+
+
+app.get('*', (req, res) => { // '*' is a wildcard url 
+    res.render('404', {
+        errorMessage: '404 - Page Not Found',
+        name: 'George Went'
+    })
 })
 
 app.listen(3000, () => {   

@@ -106,6 +106,8 @@ You can see what a call stack is when you get an error in languages like node or
 
 ## HTTP Requests
 
+
+
 ## API Requests
 An application programming interface (API) is used to reqest infomation from a Application through a protocol or Program, via the usage of a standardised procedure or (usually) non-graphical Interaface. 
 
@@ -147,7 +149,8 @@ request({ url:url, json: true }, (error, response) => {
 })
 ```
 
-One of the main things to note about the ```response.body.<stuff>``` requests is that ```the response.body``` is the main standard within node (and other web language frameworks)  while anything that comes after this is from the JSON reply itself. For example, if a JSON looked like: 
+One of the main things to note about the ```response.body.<stuff>``` requests is that ```the response.body``` is the main standard within node (and other web language frameworks)  while anything that comes after this is from the JSON reply itself.  
+For example, if a JSON looked like: 
 ```JSON
 {
   "request": {
@@ -163,8 +166,8 @@ One of the main things to note about the ```response.body.<stuff>``` requests is
     "lat": "37.806",
     "lon": "-122.411",
   },
-  "current": {
-    "pressure": 1025,
+  "current": {              // .current
+    "pressure": 1025,       // .pressure
     "cloudcover": 100,
     "visibility": 16,
     "is_day": "yes"
@@ -180,4 +183,173 @@ request({ url:url, json: true }, (error, response) => {
 whereby ```response.body``` is telling the program to look in the body of the response (an will usually be checked in a IDE), the ```current.pressure``` is part of the JSON (and will not be picked up by an IDE - something that caught me out a lot in the past)
 
 If a response comes with a array rather than a series of nested JSON's, you can also use ```response.body.current[1]``` to referance the array rather than a JSON(Object(Object))   
+
+
+
+
+
+
+
+## Web Servers
+
+
+```js
+const path = require('path')       // path allows us to access other directories in the server 
+const express = require('express')
+```
+`/`  = absoloute link : From /root  
+`./` = relative link  : From the current directory 
+
+
+```js
+console.log(__dirname) // absoloute path to the directory the file is in
+console.log(__filename) // absoloute path to the file itself
+console.log(path.join(__dirname, '../public')) // path module alows us to modify the file path
+// it allows us to access files that are not in the same directory
+
+const app = express() // link app to the express object
+const publicDirectoryPath = path.join(__dirname, '../public') 
+// assign the location of the public files to a variable
+
+app.use(express.static(publicDirectoryPath)) // sets up the static file location to server static files
+``` 
+We can link to pages using 
+```js
+// Root
+app.get('', (req, res) => { // (port, function(request, response))
+    res.send('<h1>Hello express<h1>')
+})
+```
+
+We can also link to html pages by linking the pages from root with html
+for example ```localhost:3000/index.html```
+
+## Template Engines
+Templating engines allow us to create dynamic content rather than static content within node applications
+
+```js
+app.set('view engine', 'hbs')  //app.set('value', 'module'
+
+// Root
+app.get('', (req, res) => {
+    res.render('index')
+})
+```
+You can provide / inject values into .hbs files by using ``{{ }}``
+index.hbs
+```html
+<body>
+    <h1> {{title}}</h1>
+    <p>{{name}}</p>
+</body>
+
+```
+app.js
+```js
+app.get('', (req, res) => {
+    res.render('index', {
+        title: 'Hello World',
+        name: 'George'
+    })
+})
+```
+
+### Partial Templating 
+Partial Templating allows us to template certian parts of the site such as a header or a navigation bar. 
+
+Rendering a partial: 
+header.hbs
+```hbs
+<h1>Static Header.hbs Text</h1>
+```
+
+help.hbs
+```hbs
+<body>
+    {{>header}}     <!-- This is the partal file being imported into help.hbs -->
+    <h1> {{title}}</h1>
+</body>
+```
+> **Note:** When running the node application with partial templating, we need to use ```app.js -e js,hbs```. This notifies the app that both javascript and handlebars are being used
+
+We can also change our header to referance html page variables from different pages. 
+
+header.hbs
+```hbs
+<h1>{{title}}</h1>  <!-- This allows us to access title variables from the page variables -->
+```
+
+We can also create navigation menus using the template partials: 
+
+```hbs
+<h1>{{title}}</h1>  <!-- referances the 'title' variable from the app render variables -->
+
+<div> <!-- division -->
+    <a href="/">Weather</a> <!-- anchor -->
+    <a href="/about">About</a> <!-- anchor -->
+    <a href="/help">Help</a> <!-- anchor -->
+</div>
+```
+
+## 404 Pages
+404 pages can be used when the user goes to a User Resource Interface (URL) that does not match with any url exiting in the application. 
+The 404 page has to be at the bottom of the application code so that it is the last executed route.
+```js
+app.get('*', (req, res) => { // The * (wildcard character) means it matches all urls 
+    res.send('404 Page')
+})
+```
+
+We can also create specific 404 pages by adding the wildcard symbol after a specific directory. 
+```js
+app.get('/help/*', (req, res) => { // '*' is a wildcard url 
+res.render('404', {
+    title: 'help',
+    errorMessage: '404 - Help article not found',
+    name: 'George Went'
+    })
+})
+```
+
+## Styling applications
+We can link css files within the /public directory by letting the express application (in this case, assigned to ```app```) know the location of the /public directory. We then assignt this link to the express static functions, allowing the application to serve static files. 
+
+```js
+const publicDirectoryPath = path.join(__dirname, '../public') // assign the location of the public files to a variable
+const viewsPath = path.join(__dirname, '../templates/views')        // Assign the location of the views file to a custom directory
+const partialsPath = path.join(__dirname, '../templates/partials')
+
+// Set up handlebars  engine and views location 
+app.set('view engine', 'hbs')  //app.set('value', 'module')
+app.set('views', viewsPath)
+hbs.registerPartials(partialsPath)
+
+
+// sets up the static file location to server static files
+app.use(express.static(publicDirectoryPath)) 
+```
+
+### Flexboxes
+Flexboxes allow for more control over where content appears on a page
+You can activate flexbox by changing the diplay mode:   
+```css
+body {
+    /*set the display to allow flexboxes*/
+    display: flex;
+}
+```
+The default content will usually appear in a row, to change this you can set the flex-direction to column:  
+```css
+body{
+    flex-direction: column; /*Default value is 'row'- arranges divs in a row*/
+    min-height: 100vh; /*sets height 100% of viewport (display) height*/
+}
+```
+
+We can set a flex-box to fill all avalible space on the body height by using ```flex-grow```
+```css
+.main-content{
+    flex-grow: 1; /*allows a given element to grow to fill all spare space*/
+}
+```
 
