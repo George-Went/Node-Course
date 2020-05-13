@@ -12,6 +12,34 @@ const urlBadConnection = "http://apii.weatherstack.com/current?access_key=f5d29f
 const urlBadCoords = 'http://api.weatherstack.com/current?access_key=f5d29fe99e3d251369840b4f1baa08d0&query=&units=m'
 
 
+
+geocode('london', (error, data) => { // only error OR data will be called
+    console.log('Error:', error) // will return undefined if no error shows up 
+    console.log('Data:', data)
+})
+
+forecast(-75.7088, 34.1545, (error, data) => {
+    console.log('Error', error)
+    console.log('Data', data)
+  })
+
+// We can also 'chain' calbacks so that one callback can return results
+// that are then used in a second callback
+
+geocode('Boston', (error, data) => { // only error OR data will be called
+console.log('Error:', error) // will return undefined if no error shows up 
+console.log('Data:', data)
+
+forecast(data.longlitude, data.latitude, (error, data) => {
+    console.log('Error', error)
+    console.log('Data', data)
+    })
+})
+
+
+
+
+
 // Parsing and reporting data in a useful manner
 // request({ url:url, json: true }, (error, response) => {
    
@@ -76,26 +104,3 @@ const urlBadCoords = 'http://api.weatherstack.com/current?access_key=f5d29fe99e3
 //         console.log(chalk.green(latitude, longlitude))
 //     }
 // })
-
-geocode('london', (error, data) => { // only error OR data will be called
-    console.log('Error:', error) // will return undefined if no error shows up 
-    console.log('Data:', data)
-})
-
-forecast(-75.7088, 34.1545, (error, data) => {
-    console.log('Error', error)
-    console.log('Data', data)
-  })
-
-// We can also 'chain' calbacks so that one callback can return results
-// that are then used in a second callback
-
-geocode('Boston', (error, data) => { // only error OR data will be called
-console.log('Error:', error) // will return undefined if no error shows up 
-console.log('Data:', data)
-
-forecast(data.longlitude, data.latitude, (error, data) => {
-    console.log('Error', error)
-    console.log('Data', data)
-    })
-})

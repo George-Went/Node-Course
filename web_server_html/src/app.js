@@ -35,8 +35,12 @@ app.get('/about' ,(req, res) => {
 })
 
 
-
-
+// Sending back JSON
+app.get('/products', (req, res) => {
+    res.send({
+        products: []
+    })
+})
 
 
 

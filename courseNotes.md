@@ -353,3 +353,212 @@ We can set a flex-box to fill all avalible space on the body height by using ```
 }
 ```
 
+## Accesing API's from a browser
+API's can be used to send back data to a user based on the ```URL``` (User Resource Locator) - you cant pass data between pages client side (usually). The main way that server resources are pased is via ```query strings```, these always start by using the ```?``` symbol, for example a basic query string would look like  
+```localhost:3000/products?search=food```
+You can also search using multiple datasets using the ```&```
+```localhost:3000/products?search=food&drink=water```  
+  
+API's usually respond with a JSON string that can be parsed to get specific data from a database or server.
+
+
+### Query Strings 
+We can set up a basic JSON response to a api request - this is an express rout handler 
+```js
+app.get('/products', (req, res) => {
+    res.send({
+        // Response is a JSON 
+        products: []
+    })
+})
+```
+
+### Requests and Response functions
+with ```app.get``` functions there are two main function parts to consider, the ```request``` and the ```response```, usually represented by ```req``` and ```res```.  
+
+If we set up a route using a request, we can see that it returns serch terms used in the URL string.
+```js
+app.get('/products', (req, res) => {
+    console.log(req.query.search)
+    res.send({
+        // JSON 
+        products: []
+    })
+})
+```
+In a similar fashion to API request from a page, we can dissasemble the url into its component parts, for the code example above using the URL ```localhost:3000/products?search=food```.     
+Breaking this down we can see that:  
+1. THe client is *req*uesting to go to the ```/products``` page. 
+2. The server should prepare for a query due to the ```?``` in the url
+3. THe query is that the client wants to search for something
+4. The search term is ```food```
+5. The server can now *res*pond to the request, it```.send``` back a JSON string showing the produts.
+6. In this case the server also sends a console log saying what the search term that was used within the url (```food```).
+
+
+You can also change the response infomation based on the data send in the request url:
+
+```js
+app.get('/weather' ,(req, res) => {
+
+    if (!req.query.address){  // This code only runs when the request fails
+        return res.send({
+            error: 'You must provide a location search term'
+        })
+    }
+
+    console.log(req.query.address)
+
+    res.send({
+        location: req.query.address, // JSON takes data from the url address term
+        temperature: 17,
+        wind_speed: 5,
+        cloud_coverage: 'Overcast '
+    })
+```
+In the below example, if a user goes to ```localhost:3000/weather?address=[address]``` then the address term in the JSON is the same as the address searched in the url.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Problems you can run into 
+```
+cannont set headers after they are sent to the client
+```
+This is due to the server trying to respond twice to the user, http request have a single request that goes to the server and a single respone that comes out from the server. The above error message is due to the server trying to send back two responses. This can be fixed by either using a ```return``` statment or making sure that all responsed are covered by defensive features such as ```else``` clauses. 
+
+
+An example of code that sends back two responses base on the url it recieves ```/product?search=[item]```:  
+```js
+app.get('/products', (req, res) => {
+    // This code only runs when the request fails 
+    // e.g if there is no '?search' after product 
+    if (!req.query.search){  
+        res.send({
+            error: 'You must provide a search term'
+        })
+    }
+
+    console.log(req.query.search) // This still sends back even if there is not a search term.
+    res.send({
+        // JSON 
+        products: []
+    })
+})
+```
+
+The same code with a fix:    
+```js
+app.get('/products', (req, res) => {
+    if (!req.query.search){  // This code only runs when the request fails
+        return res.send({  // Adding a retrun acts as a break - all code after this function does not run 
+            error: 'You must provide a search term'
+        })
+    }
+
+    console.log(req.query.search)
+    res.send({
+        // JSON 
+        products: []
+    })
+})
+```
+
+### Adding API Function as a respones to a API request
+>**Context:** we have pre-built API utilities (```/utils/forecast.js```) that have been given to us to use in an application.  
+How do we utilise these utility functions? 
+
+### Loading in our function
+Importing the functions into ```/src/app.js```
+We can import the utilitiles like any other npm module:   
+```js
+const geocode = require('./utils/geocode')
+const forecast = require('./utils/forecast')
+```
+
+### Using imported API functions
+Due to the way that our utility functions work, we can put an address we have gotten from a url query into the function:  
+
+```js
+geocode(req.query.address, (error, data) => { // only error OR data will be called
+    console.log('Error:', error)     // will return undefined if no error shows up, otherwise prints out error 
+    console.log('Data:', data)       // will return data from location as an object 
+})
+```
+we can see from the above code that we can pass in the queried address as a location in the geocode function. When this runs, we can get a printout of the location we have typed in the url back as data: 
+```js
+Error: undefined    // No errors were detected so no object was passed   
+Data: { latitude: 53.46667,
+  longitude: -2.23333,
+  location: 'Manchester, Greater Manchester, England, United Kingdom' }
+```
+
+However, due to the way that the api works, our data is returned as an object, we can get past this by ```destructuring``` the ```data``` variable:
+
+The below code prints out the data varaibles based on the address location
+
+```js
+geocode(req.query.address, (error, { latitude, longitude, location}) => { 
+    console.log(latitude)
+    console.log(longitude)
+    console.log(location)
+
+})
+```
+
+
+### Default parameters
+
+
+### Fetch
+Fetch is a *browser* based function that can be used to collect api's from sites or web pages. Fetch kicks off asynchronous operations that are executed when the data is avalible. 
+```js
+// Function gets puzzle json object from the url, then prints it into the clientside console (accessable using )
+fetch('http://localhost:3000/weather?address=london').then(response => {
+    response.json().then((data) => { //takes the response and assigns it to the var 'data'
+        if (data.error) {
+            console.log(data.error)
+        }
+        else {
+            console.log(data.address)
+            console.log(data.forecast)
+            console.log(data.location)
+        }
+    })
+})
+```
+
+### Forms in Nodejs 
+Creating the HTML front end for a form:
+```html
+<form>
+    <input placeholder="location"> // placeholder can be use for showing example text
+    <button>Search</button> This is the 'sumbit button that activates the form
+</form>
+```
+
+Client side javascript
+While we have a form, nothing happens if we press it, we can use client side js in the ```public/js/app.js```:
+```js
+let weatherForm = document.querySelector('form')
+weatherForm.addEventListener(`submit`, (e) => {
+    e.preventDefault() // prevents the whol page from reloading when we click the search button
+
+    console.log('testing')
+})
+```
+
+>**Note:** The deafault function for form submission is to relaod the html page, this is a relic of a function from a time when efffective scripting to counter bad search results was not avalible.
+
+>**Note:** When decalring variables that are expected to be changed, dont use ```const``` and the variable can sometimes be declared on the loading of the page and is now stuck on the default value. The way around this is to either use ```var``` or ```let```.

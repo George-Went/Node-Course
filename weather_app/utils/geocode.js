@@ -1,5 +1,12 @@
 
 // Geocode.js uses callback functions to call the mapbox api
+
+//    Used as followed:
+
+//    geocode([address], (error, data) => { })
+//    deconstructed
+//    geocode([address], (error, {latitude, longitude, location}) => { })
+
 const request = require('request')
 
 const geocode = (address, callback) => {
@@ -8,7 +15,7 @@ const geocode = (address, callback) => {
     // the encodeURICompnent allows for adress string which contatins url parts such as '/ or?'
     // and ecodes them so the app doesnt crash
 
-    // request our custom url response 
+    // request our custom url response - curated from the main API
     request({url: url, json: true}, (error, response) => {
 
         if(error)
@@ -25,7 +32,7 @@ const geocode = (address, callback) => {
             // the callback values are returned as part of an object 
 
                 latitude: response.body.features[0].center[1], 
-                longlitude: response.body.features[0].center[0],
+                longitude: response.body.features[0].center[0],
                 location: response.body.features[0].place_name
 
             })

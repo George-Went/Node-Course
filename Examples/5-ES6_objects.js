@@ -42,3 +42,4 @@ const transaction = (type, {label, stock}) => { // we never get access to the wh
 }
 
 transaction('order: ', product) // will produce order: notebook 201
+
