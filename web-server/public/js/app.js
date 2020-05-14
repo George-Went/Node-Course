@@ -23,7 +23,12 @@ fetch('http://localhost:3000/weather?address=london').then(response => {
 var weatherForm = document.querySelector('form') 
 var searchElement = document.querySelector('input') // input value is assigned to the var 'searchElement
 
-var messageOne = document.querySelector()
+var messageOne = document.querySelector('#message-1') // the '#' allows us to select via ID
+var messageTwo = document.querySelector('#message-2')
+var messageThree = document.querySelector('#message-3')
+var messageFour = document.querySelector('#message-4')
+
+// messageOne.textContent = 'From Javascript'
 
 weatherForm.addEventListener(`submit`, (e) => {
     e.preventDefault()// prevents the whol page from reloading when we click the search button
@@ -37,11 +42,20 @@ weatherForm.addEventListener(`submit`, (e) => {
     response.json().then((data) => {
         if (data.error) {
             console.log(data.error)
+            messageOne.textContent = data.error
+            messageTwo.textContent = ''
+            messageThree.textContent = ''
+            messageFour.textContent = ''
+            
         }
         else {
             console.log(data.address)
             console.log(data.forecast)
             console.log(data.location)
+            messageOne.textContent =''
+            messageTwo.textContent = data.address
+            messageThree.textContent =  data.forecast
+            messageFour.textContent = data.location
         }
     })
 })

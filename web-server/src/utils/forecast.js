@@ -30,14 +30,24 @@ const forecast = (latitude, longitude ,callback) => {
         }
         else {
             //link response callback to an object with the api data requested
-            callback(undefined, { // 'undefined' -  makes sure that error does not have a value    
+            callback(undefined, // 'undefined' -  makes sure that error does not have a value    
+                
+                'Temperature: ' + response.body.current.temperature +
+                ' Wind Speed: ' + response.body.current.wind_speed +
+                ' Pressure: ' + response.body.current.pressure + 
+                ' Humidity: '+ response.body.current.humidity + 
+                ' Cloudcover: ' + response.body.current.cloudcover
 
-                temperature: response.body.current.temperature,
-                wind_speed: response.body.current.wind_speed,
-                pressure: response.body.current.pressure,
-                humidity: response.body.current.humidity,
-                cloudcover: response.body.current.cloudcover,
-            })
+                // Below Returns as Object
+                //{
+                // temperature: response.body.current.temperature,
+                // wind_speed: response.body.current.wind_speed,
+                // pressure: response.body.current.pressure,
+                // humidity: response.body.current.humidity,
+                // cloudcover: response.body.current.cloudcover,
+                //}
+
+            )
         }
         
     })

@@ -166,15 +166,15 @@ For example, if a JSON looked like:
     "lat": "37.806",
     "lon": "-122.411",
   },
-  "current": {              // .current
-    "pressure": 1025,       // .pressure
+  "current": {                 
+    "pressure": 1025,       
     "cloudcover": 100,
     "visibility": 16,
     "is_day": "yes"
   }
 }
 ```
-The main way to call a specific value would be 
+The main way to call a specific value would be to call the nested varibles in the json e.g ```current.pressure```
 ```js
 request({ url:url, json: true }, (error, response) => {
     const weatherData = (response.body.current.pressure)
@@ -676,4 +676,16 @@ weatherForm.addEventListener(`submit`, (e) => {
     })
 })
 ```
-### Getting results on a HTML page 
+
+
+#### .querySelector vs .getByElementId
+QuerySelector can be used for selecting elements from the DOM by there element type, as long as the element you want is the first type on the HTML page.  
+
+For selecting specific elements on a HTML page, you can select via id by using the ```#``` to specify that you're looking for an id. 
+```js
+// The HTML element with the id 'message-1' will be assinged to the var 'messageOne'
+var messageOne = document.querySelector('#message-1')
+messageOne.textContent = 'From Javascript' // On refresh message-1 element will display the text
+// You can also input variables into messageOne, not just strings
+```
+
