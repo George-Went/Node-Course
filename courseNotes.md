@@ -190,6 +190,17 @@ If a response comes with a array rather than a series of nested JSON's, you can 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 ## Web Servers
 
 
@@ -254,6 +265,23 @@ app.get('', (req, res) => {
 })
 ```
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### Partial Templating 
 Partial Templating allows us to template certian parts of the site such as a header or a navigation bar. 
 
@@ -310,6 +338,21 @@ res.render('404', {
     })
 })
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Styling applications
 We can link css files within the /public directory by letting the express application (in this case, assigned to ```app```) know the location of the /public directory. We then assignt this link to the express static functions, allowing the application to serve static files. 
@@ -373,6 +416,23 @@ app.get('/products', (req, res) => {
 })
 ```
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### Requests and Response functions
 with ```app.get``` functions there are two main function parts to consider, the ```request``` and the ```response```, usually represented by ```req``` and ```res```.  
 
@@ -434,7 +494,7 @@ In the below example, if a user goes to ```localhost:3000/weather?address=[addre
 
 ### Problems you can run into 
 ```
-cannont set headers after they are sent to the client
+Error: cannont set headers after they are sent to the client
 ```
 This is due to the server trying to respond twice to the user, http request have a single request that goes to the server and a single respone that comes out from the server. The above error message is due to the server trying to send back two responses. This can be fixed by either using a ```return``` statment or making sure that all responsed are covered by defensive features such as ```else``` clauses. 
 
@@ -474,6 +534,13 @@ app.get('/products', (req, res) => {
     })
 })
 ```
+
+
+
+
+
+
+
 
 ### Adding API Function as a respones to a API request
 >**Context:** we have pre-built API utilities (```/utils/forecast.js```) that have been given to us to use in an application.  
