@@ -17,12 +17,36 @@ fetch('http://localhost:3000/weather?address=london').then(response => {
     })
 })
 
-var weatherForm = document.querySelector('form')
+// ---------------------------------------------------------------
+// Weather / Location API connections 
+// ---------------------------------------------------------------
+var weatherForm = document.querySelector('form') 
+var searchElement = document.querySelector('input') // input value is assigned to the var 'searchElement
+
+var messageOne = document.querySelector()
 
 weatherForm.addEventListener(`submit`, (e) => {
-    e.preventDefault()
+    e.preventDefault()// prevents the whol page from reloading when we click the search button
+
+    let location = searchElement.value // search result is assinged to the var 'location'
 
     console.log('testing')
+    console.log('http://localhost:3000/weather?address=' + location)
+
+    fetch('http://localhost:3000/weather?address=' + location).then(response => {
+    response.json().then((data) => {
+        if (data.error) {
+            console.log(data.error)
+        }
+        else {
+            console.log(data.address)
+            console.log(data.forecast)
+            console.log(data.location)
+        }
+    })
+})
+
+
 })
 
 

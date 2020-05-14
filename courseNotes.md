@@ -522,9 +522,9 @@ geocode(req.query.address, (error, { latitude, longitude, location}) => {
 
 
 ### Fetch
-Fetch is a *browser* based function that can be used to collect api's from sites or web pages. Fetch kicks off asynchronous operations that are executed when the data is avalible. 
+Fetch is a *browser* (client side) based function that can be used to collect api's from sites or web pages. Fetch kicks off asynchronous operations that are executed when the data is avalible. 
 ```js
-// Function gets puzzle json object from the url, then prints it into the clientside console (accessable using )
+// Function gets puzzle json object from the url, then prints it into the clientside console.
 fetch('http://localhost:3000/weather?address=london').then(response => {
     response.json().then((data) => { //takes the response and assigns it to the var 'data'
         if (data.error) {
@@ -539,7 +539,7 @@ fetch('http://localhost:3000/weather?address=london').then(response => {
 })
 ```
 
-### Forms in Nodejs 
+## Forms in Nodejs 
 Creating the HTML front end for a form:
 ```html
 <form>
@@ -548,7 +548,7 @@ Creating the HTML front end for a form:
 </form>
 ```
 
-Client side javascript
+### Client side javascript
 While we have a form, nothing happens if we press it, we can use client side js in the ```public/js/app.js```:
 ```js
 let weatherForm = document.querySelector('form')
@@ -562,3 +562,51 @@ weatherForm.addEventListener(`submit`, (e) => {
 >**Note:** The deafault function for form submission is to relaod the html page, this is a relic of a function from a time when efffective scripting to counter bad search results was not avalible.
 
 >**Note:** When decalring variables that are expected to be changed, dont use ```const``` and the variable can sometimes be declared on the loading of the page and is now stuck on the default value. The way around this is to either use ```var``` or ```let```.
+
+### Accessing and using data from forms
+We can access data from forms by utilising either the ```document.querySelector``` or ```document.getElementById``` (if your elements have id's). These can then be put into variables and utilised by the client side javascript for various functions
+
+```js
+// input value is assigned to the var 'searchElement'
+var searchElement = document.querySelector('input')
+
+weatherForm.addEventListener(`submit`, (e) => {
+    e.preventDefault()
+
+    // search result is assinged to the var 'location'
+    let location = searchElement.value
+
+    console.log('testing')
+    console.log(location)
+})
+```
+
+### Utilising forms and fetch requets
+Both forms and fetch elements can be used together to create search forms that can be used to access data from either your own or other websites. 
+
+THe example below allows us to enter in a location name and get the weather location, by combining a form and a fetch request to another area of the site that calls API requests.
+```js
+var searchElement = document.querySelector('input') // gets input from search box
+
+weatherForm.addEventListener(`submit`, (e) => {
+    e.preventDefault()
+
+    let location = searchElement.value
+
+    console.log('testing')
+    console.log('http://localhost:3000/weather?address=' + location)
+
+    fetch('http://localhost:3000/weather?address=' + location).then(response => {
+    response.json().then((data) => {
+        if (data.error) {
+            console.log(data.error)
+        }
+        else {
+            console.log(data.address)
+            console.log(data.forecast)
+            console.log(data.location)
+        }
+    })
+})
+```
+### Getting results on a HTML page 
