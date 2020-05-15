@@ -63,18 +63,23 @@ app.get('/weather' ,(req, res) => {
             error: 'You must provide a location search term'
         })
     }
+    
+    // Code for console logging on server side console
+    // -----------------------------------------------------------------------------------------
+   
+    // geocode(req.query.address, (error, { latitude, longitude, location}) => { 
+    //     console.log(latitude)
+    //     console.log(longitude)
+    //     console.log(location)
 
-    geocode(req.query.address, (error, { latitude, longitude, location}) => { 
-        console.log(latitude)
-        console.log(longitude)
-        console.log(location)
+    //     forecast(latitude, longitude, (error, forecastData) => {
+    //         console.log(forecastData)
+    //     })
 
-        forecast(latitude, longitude, (error, forecastData) => {
-            console.log(forecastData)
-        })
-
-    })
-
+    // })
+    // -------------------------------------------------------------------------------------
+    
+    
     // 1. require geocode/forecast into app.js
     // 2. use address to geocode
     // 3. Use coords to get forecast 
