@@ -100,4 +100,65 @@ MongoClient.connect(connectionURL, { userNewUrlParser: true }, (error, client) =
         console.log(user)
     })
 
+    // Finding a task based on the completion state
+    db.collection('tasks').find({'completed': false }).toArray((error, tasks) => {
+        if (error) {
+            console.log('Unable to fetch')
+        }
+        console.log(tasks)
+    })
+
+    // ------------------------------------------------------------------------------------------
+    // Updating Documents From a Collection
+    // ------------------------------------------------------------------------------------------
+    
+    // Updating a single user via their id 
+    db.collection('users').updateOne(
+        {_id: new Object('5ebec6b5b738ab26ff9ab101')}, // creating a new id object with our existing _id value
+        {$set: {                                       // changing a documents variables
+            name: 'mike'                               // Changing name variable to 'mike'
+        }
+    })
+
+    // Updating a single user via id and then returning data via a promise
+    const updatePromise = db.collection('users').updateOne(
+        {_id: new Object('5ebec6b5b738ab26ff9ab101')}, // creating a new id object with our existing _id value
+        {$set: {                                       // changing a documents variables
+            name: 'mike'                               // Changing name variable to 'mike'
+        }
+    })
+
+    updatePromise.then((result) => {   // Creating promise that returns result or error
+        console.log(result)            // return result datat
+    }).catch((error) => {
+        console.log(error)             // return result error
+    })
+
+    // We can combine the two to do all of the above at once 
+    db.collection('users').updateOne(
+        {_id: ObjectID('5ebec6b5b738ab26ff9ab101')}, // creating a new id object with our existing _id value
+        {$set: {                                  // changing a documents variables
+            name: 'mike',
+            age: '25'                               // Changing name variable to 'mike'
+        }
+    }).then((result) => {
+        console.log(result)    // return result data (success state)
+    }).catch((error) => {
+        console.log(error)     // return error data (failure state )
+    })
+
+    // Updating multiple doucments from a collection
+    // note that this uses the 'tasks' collection
+    db.collection('tasks').updateMany({
+        completed: true         // Find all documents that are 'completed: true'
+    },{
+        $set: {
+            completed: false    // Set the value of 'completed' to 'false'
+        }
+    }).then((result) => {
+        console.log(result)    // return result data (success state)
+    }).catch((error) => {
+        console.log(error)     // return error data (failure state )
+    })
+
 }) 

@@ -91,13 +91,121 @@ You could daisy chain the operators together so that function 1 calls function 2
 >**Note:** Traditionally, code is executed in a linier fashion with one function/method taking place after the other (this is completly oversimplifying it). Due to the high level nature of node if we too this at its word, we would have massive daisy chains of code so that a database + a client and a server (and all the exception checks) - making it unreadable (for me at least)
 
 
+### Callbacks
+A very basic view of a callback is that a child method is sent out by its parent to fetch some data, the collection of this data could take some time, so the execution is unknown. When this child method finds the data, it returns back to the parent method with its results.
 
-## Call Stack 
+Example of a callback using ES6: 
+```js
+const doWorkCallback = (callback) => { 
+    setTimeout(() => {
+        callback('This is my error', undefined)
+    }, 2000)
+}
+
+doWorkCallback((error, result) => {
+    if (error) {
+        return console.log(error)
+    }
+
+    console.log(result)
+})
+```
+
+The same callback using normal syntax 
+```js
+doWorkCallback = function(callback){
+    setTimeout(() => {
+        callback('This is my error', undefined)
+        // The first callback var is always called if there is an error
+        // The second var is called if there is a result 
+    }, 1000)
+}
+
+doWorkCallback((error, result) => {
+    if (error) {
+        return console.log(error)
+    }
+
+    console.log(result)
+})
+```
+
+>**Note:** A good analogy is a parent doing a standard shopping trip with a child along a set route, while walking past the vegitable isle, they mention to the child that they need to get some milk. The parent then sends off the child to collect the milk, while they themselves continue with the rest of the shopping and then gets to the checkout and waits for the child. after a while, the child returns with the item and they can pay for the stuff they have ordered. 
+
+
+
+
+### Call Stack 
 In a simple synchronous application, the callstack tracks the execution of a program from its inception at a point like `app.js` to its final endpoint. With engines, when the program finishes it repeats again, with events being triggered if the programed conditions are met. This givecs rise to the name `event loop`.  
 
 You can see what a call stack is when you get an error in languages like node or java - the functions that are called that lead up to the error are printed out in the manner they are called - a call stack. 
 
 >**Note:** historically a stack
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Promises
+Promises are simalar to callbacks in that they return a success or failure state for a method in an asychonous environment. However, unlike callbacks, promises allow for execution of code depending on the error, rather than just passing that an error has occured. 
+
+With a correct return, a ```.then``` is used.
+With a error return, a ```.catch``` is used
+
+Example of a promise: 
+```js
+const doWorkPromise = new Promise((resolve,reject) => {
+    setTimeout(() => {
+       // resolve([7,4,1])
+        reject('Things went wrong') // We can only call either a resolve or reject
+    }, 2000)
+})
+
+// Success - resolve 
+doWorkPromise.then((result) => {
+    console.log('Success', result)// function goes well - resolve is called
+}).catch((error) => {
+    console.log('Error', error)   // function failed - reject is called
+}) 
+
+
+
+```
+
+>**Note:** In the 'supermarket example', a comparison can be made that with a callback, the child method just comes back to the parent with a "i cant find milk" statement. With a promise, the parent can say that if there isnt any milk, then they should get cheese instead. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -419,20 +527,6 @@ app.get('/products', (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ### Requests and Response functions
 with ```app.get``` functions there are two main function parts to consider, the ```request``` and the ```response```, usually represented by ```req``` and ```res```.  
 
@@ -477,29 +571,6 @@ app.get('/weather' ,(req, res) => {
     })
 ```
 In the below example, if a user goes to ```localhost:3000/weather?address=[address]``` then the address term in the JSON is the same as the address searched in the url.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ### Problems you can run into 
 ```
@@ -995,7 +1066,7 @@ When this code runs the client will be connected to the database for as long as 
 
 
 
-
+>**Note:** For all of the example code, we are using a database called ```users```
 
 
 
@@ -1034,11 +1105,6 @@ MongoClient.connect(connectionURL, { userNewUrlParser: true }, (error, client) =
     }
 
     const db = client.db(databaseName) 'db'
-
-    db.collection('users').insertOne({
-        name: 'George',
-        Age: 24
-    })
 }) 
 ```
 
@@ -1120,7 +1186,7 @@ db.collection('users').insertOne({
 
 
 
-### Querying Databases 
+### Querying (Reading) Databases 
 We can query a database on values by using the ```findOne``` function:
 ```js
 db.collection('users').findOne({ name: 'michale', age: 27}, (error, user) => {
@@ -1149,3 +1215,41 @@ db.collection('users').find({ name: 'george'}).toArray((error, user) => {
     console.log(user)
 })
 ```
+
+## Updating Documents 
+Updating documents is a important part of managing databases as most stuff isnt a constant in real life. 
+
+We can change one document via its id by using the below code.
+```js
+db.collection('users').updateOne(
+    {_id: ObjectID('5ebec6b5b738ab26ff9ab101')}, // creating a new id object with our existing _id value
+    {$set: {                                  // changing a documents variables
+        name: 'mike',
+        age: '25'                               // Changing name variable to 'mike'
+    }
+}).then((result) => {
+    console.log(result)    // return result data (success state)
+}).catch((error) => {
+    console.log(error)     // return error data (failure state )
+})
+```
+>**Note:** When finding (filtering) via the ```_id``` of a object, we need to referance the fact that it is a object, not a number (being built out of various data) - Overall this means that we need to use the below example instead of just ```_id: <id number>```
+```js
+_id: ObjectID('5ebec6b5b738ab26ff9ab101')
+```
+
+We can aso change multiple documents at once by using the ```updateMany``` - Note that this example uses the ```tasks``` collection.
+```js
+    db.collection('tasks').updateMany({
+        completed: true
+    },{
+        $set: {
+            completed: false
+        }
+    }).then((result) => {
+        console.log(result)    // return result data (success state)
+    }).catch((error) => {
+        console.log(error)     // return error data (failure state )
+    })
+```
+
