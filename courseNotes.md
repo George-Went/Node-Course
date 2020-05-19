@@ -1253,3 +1253,243 @@ We can aso change multiple documents at once by using the ```updateMany``` - Not
     })
 ```
 
+
+
+
+## Rest API's and Mongoose 
+
+### Mongoose
+Mongoose allows us to quickly set up schema based modeling for application data. This allows use to map application objects onto the mongodb database. 
+
+We can connect to a database using mongoose with the following code below:
+```js
+// Connect to mongoose db
+mongoose.connect('mongodb://127.0.0.1:27017/task-manager-api',{
+    useNewUrlParser: true,
+    useCreateIndex: true
+})
+```
+
+
+### Connecting to a MongoDB Database
+```js
+//Importing Mongoose 
+var mongoose = require('mongoose');
+
+db = mongoose.connect('mongodb://localhost/test');
+//moongoose.connect(url / location)
+//you can assing a varaible to the connected database
+```
+This code snippet will allow us to use moongoose, then connect to a database at a specified location. 
+
+You can also create a callback to the database being connected, or failing to connect.
+
+```js
+//Reports the error to the conosle log screen if it has failed to connect
+db.on('error', console.error.bind(console, 'connection error:'));
+
+//Reports that the database has successfully been connected to
+db.once('open', function() {
+  // we're connected!
+  console.log('connected to nodedb')
+});
+```
+
+### Creating a Schema 
+While you can create schemas directly into the app.js file, creating them in a seperate file and then exporting them as modules allows us to reduce the complexity of the code. 
+```
+ Models
+    book.js
+ app.js
+```
+Example of a schema:  
+```js
+//Import mongoose
+let mongoose = require('moongoose');
+
+//Article Schema
+let articleSchema = mongoose.Schema({
+    title:{
+        type: String,      //Variable Type
+        required: true     //Is this variable required? (default is false)
+    },
+    author:{
+        type: String,
+        required: true
+    },
+    body:{
+        type: String,
+        required: true
+    }
+});
+
+//Export the js file as a module (class) called 'Article'
+let  Article = module.exports = mongoose.model('Article', articleSchema)
+```
+>**Note:** ```mongoose.model('Article', articleSchema)``` is where we specify what collection we want to connect to within the mongoDB database. This is then defined as ```Article``` as an export
+
+#### Schema types (fields)
+A schema can have an arbitary number of fields - each one represents a 'field' in the documents:
+
+```js
+var schema = new Schema(
+{
+  name: String,
+  binary: Buffer,
+  living: Boolean,
+  updated: { type: Date, default: Date.now() },
+  age: { type: Number, min: 18, max: 65, required: true },
+  mixed: Schema.Types.Mixed,
+  _someId: Schema.Types.ObjectId,
+  array: [],
+  ofString: [String], // You can also have an array of each of the other types too.
+  nested: { stuff: { type: String, lowercase: true, trim: true } }
+})
+```
+While most follow other database value types, their are 3 exceptions: 
+```ObjectID```: Represents specific instances of a model in the database - this will actually contain the unique ID ```(_id)``` that the field has. 
+
+```Mixed```: An 'anything goes' type field
+
+```[]```: An array of items - you can pull javascript operations on these models. 
+
+#### Schema Validation
+Mongoose provides built-in custom validation
+The build in validators include :
+* All schema types have the ```required``` validator. This is used to specify whether the field must be supplied in order to save a document 
+* ```Numbers``` have ```min``` and ```max``` values.
+* Strings have: 
+  * ```enum```: specifies the set of allowed values for the field 
+  * ```match```: specifies a regular expression that the string must match.
+  *  ```maxlength``` and ```minlength``` for the string.
+
+You can see all the options at https://mongoosejs.com/docs/schematypes.html#string-validators
+
+
+```js
+var breakfastSchema = new Schema({
+  eggs: {
+    type: Number,
+    min: [6, 'Too few eggs'],
+    max: 12,
+    required: [true, 'Why no eggs?']
+  },
+  drink: {
+    type: String,
+    enum: ['Coffee', 'Tea', 'Water',]
+  }
+});
+```
+### Validation messages 
+We can throw error meassages as a callback
+
+We can also create our own validations
+```js
+const User = mongoose.model('User',{
+    name: {
+        type: String,
+        required: true
+    },
+    age:{
+        type: Number,
+        validate(value) {
+            if (value < 0) {
+                throw new Error('Age must be a positive number')
+            }
+        }
+    }
+})
+```
+
+### Installing Validation npm Packages 
+we can import validator.js which automatically does alot of the validation process for us. 
+
+we can see the 
+
+An example of a validation npm package being helpful is checking emails: 
+```js
+const User = mongoose.model('User',{
+    name: {
+        type: String,
+        required: true
+    },
+    age:{
+        type: Number,
+        validate(value) {
+            if (value < 0) {
+                throw new Error('Age must be a positive number')
+            }
+        }
+    },
+    email: {
+        type: String,
+        required: true,
+        validate(value) {
+            if (!validator.isEmail(value)) { // using imported validator email check (note that it is flipped - if the value is NOT an email)
+                throw new Error('Email is invalid')
+            }
+        }
+    }
+})
+
+const me = new User({
+    name: 'George',
+    age: 24,
+    email: 'Gep@'
+})
+
+```
+With the above code, if a user does not have a verified email, they will be presednted with an error message. 
+
+
+
+
+
+#### Virtual Properties 
+Virtual Properties are properties that a person can get and set, but do *not* persist to a MongoDB database.   
+```Getters```: Useful for formatting or combining fields.    
+```Setters```: Useful for de-composing a single value into multiple values for storage.  
+
+
+
+### Structuing a REST API (Representational State Transfer)
+REST: Representational State Transfer
+API: Application Programming Interface 
+REST API: 'RESTful Application'
+
+The REST api allow clients such as a web application to access and manipulate resources using a set of predefined operations. 
+
+Resource: User or Task 
+Predefined Operation: Ability to create a new task or mark as complete. Upload a file
+
+#### Task Resources
+
+Create : ```POST``` /tasks - Posts new data to server
+Read: ```GET``` /tasks - Get existing data from server
+Read: ```GET``` /tasks/:id - Get specific id data from server
+Update: ```PATCH``` /tasks/:id - Update existing data 
+Delete: ```DELETE``` /task/:id - Deleting a task by its id
+
+#### What makes up a HTTP request?
+Some text (litterally - no compression)
+
+Request: 
+POST ```/tasks HTTP/1.1```
+Accept ```application/json```
+Connection: ```Keep-Alive```
+Authorization: ```Bearer ubi7oigf8ogsdbo8dfbdsfn```
+
+```{description: "get some food"}```
+
+
+Response: 
+```HTTP/1.1 201 Created```
+Date: ```wed,19 may 2020```
+Server: ```Express```
+Content-Type: ```application/json ```
+
+{task data}
+
+
+
+## Resource Creation Endpoints

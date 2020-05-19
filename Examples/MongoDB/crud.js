@@ -161,4 +161,27 @@ MongoClient.connect(connectionURL, { userNewUrlParser: true }, (error, client) =
         console.log(error)     // return error data (failure state )
     })
 
+
+    // ------------------------------------------------------------------------------------------
+    // Deleting Documents From a Collection
+    // ------------------------------------------------------------------------------------------
+    
+    // Removing One Document from a collection
+    db.collection('users').deleteOne({
+        age: 30,                   // filter based on age 
+    }).then((result) => {
+        console.log(result)        // return result data (success state) 
+    }).catch((error) => {
+        console.log(error)         // return error data (failure state )
+    })
+
+    // Removing Multiple Documents from a collection
+    db.collection('users').deleteMany({
+        age: 26,                    // filter based on age 
+    }).then((result) => {
+        console.log(result)        
+    }).catch((error) => {
+        console.log(error)         
+    })
+
 }) 
