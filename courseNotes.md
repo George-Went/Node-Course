@@ -1473,7 +1473,7 @@ Delete: ```DELETE``` /task/:id - Deleting a task by its id
 #### What makes up a HTTP request?
 Some text (litterally - no compression)
 
-Request: 
+A Request: 
 POST ```/tasks HTTP/1.1```
 Accept ```application/json```
 Connection: ```Keep-Alive```
@@ -1482,7 +1482,7 @@ Authorization: ```Bearer ubi7oigf8ogsdbo8dfbdsfn```
 ```{description: "get some food"}```
 
 
-Response: 
+A Response: 
 ```HTTP/1.1 201 Created```
 Date: ```wed,19 may 2020```
 Server: ```Express```
@@ -1493,3 +1493,52 @@ Content-Type: ```application/json ```
 
 
 ## Resource Creation Endpoints
+While just reading (requesting) data from a database can be useful, API's are used in the creation and deletion of data as well. 
+
+With Express we can easily create POST,PATCH and DELETE requets as well.
+
+### Using Postman 
+Postman is an application that allows you to test api endpoints without having to write bash scripts that return a string of json all the time. You can also save multiple types of request in a collection, allowing you to come back to them if you need to test them again.
+
+### Creating a POST request 
+POST requests are used by api's for creating data, as the client 'posts' data to a computer - usually in a JSON or XML format. 
+
+With out users database, we have an example of a POST request in the main index file:
+```js
+app.post('/users', (req, res) => {      // responds to a POST 
+    const user = new User(req.body) 
+    
+    user.save().then(() => {
+        res.send(user)
+    }).catch((e) => { // catch error (using 'e')
+        res.status(400).send(e) // send back a 400 status (Bad Request)
+    })
+})
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

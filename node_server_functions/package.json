@@ -1,0 +1,21 @@
+{
+  "name": "node_server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./bin/www",
+    "devstart": "nodemon ./bin/www"
+  },
+  "author": "george went",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-validator": "^6.5.0",
+    "hbs": "^4.1.1",
+    "mongoose": "^5.9.15",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.4"
+  }
+}

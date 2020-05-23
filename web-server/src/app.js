@@ -60,9 +60,9 @@ app.get('/weather' ,(req, res) => {
 
     if (!req.query.address){  // This code only runs when the request fails
         return res.send({
-            error: 'You must provide a location search term'
-        })
-    }
+            error: 'You muorecast location
+    
+            //2.
     
     // Code for console logging on server side console
     // -----------------------------------------------------------------------------------------
