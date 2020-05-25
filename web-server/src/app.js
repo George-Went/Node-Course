@@ -60,7 +60,7 @@ app.get('/weather' ,(req, res) => {
 
     if (!req.query.address){  // This code only runs when the request fails
         return res.send({
-            error: 'You muorecast location
+            error: 'You forecast location'
     
             //2.
     
